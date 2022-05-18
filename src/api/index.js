@@ -35,3 +35,11 @@ export function getUpdate(query) {
 export function getDel(query) {
   return req.get('/list/del', query)
 }
+// 导出保存头像的方法
+export function uploadAvatar(query) {
+  return req.get('/avataredit', query)
+}
+// 获取个人信息
+export function info(query) {
+  return req.get('/info', query)
+}

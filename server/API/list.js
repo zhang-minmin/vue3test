@@ -1,3 +1,5 @@
+const express = require('express')
+const router = express.Router()
 let db = require('../db/index')
 
 exports.all = (req, res) => {

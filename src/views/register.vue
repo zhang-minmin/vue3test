@@ -28,7 +28,7 @@ const formLabelAlign = reactive({
 })
 const router = useRouter()
 const registers = async () => {
-  const { data } = await register({
+  const data = await register({
     name: formLabelAlign.username,
     password: formLabelAlign.password
   })

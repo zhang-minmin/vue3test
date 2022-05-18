@@ -17,7 +17,7 @@ exports.login = (req, res) => {
     }
 
     if (data.length > 0) {
-      const userInfo = { name }
+      const userInfo = { ...data[0] }
       const token =
         'Bearer ' +
         jwt.sign(userInfo, secretKey, {

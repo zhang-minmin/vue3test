@@ -1,9 +1,20 @@
 let express = require('express')
 let app = express()
 let cors = require('cors')
+var path = require('path')
 let bodyParser = require('body-parser')
 let router = require('./router')
+var cookieParser = require('cookie-parser')
+var logger = require('morgan')
+// view engine setup
+app.set('views', path.join(__dirname, 'views'))
+app.set('view engine', 'ejs')
 
+app.use(logger('dev'))
+app.use(express.json())
+app.use(express.urlencoded({ extended: false }))
+app.use(cookieParser())
+app.use(express.static(path.join(__dirname, 'public')))
 app.use(bodyParser.json()) //配置解析，用于解析json和urlencoded格式的数据
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(cors()) //配置跨域

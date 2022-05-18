@@ -1,7 +1,16 @@
 <template>
   <div class="common-layout">
     <el-container>
-      <el-header>你好{{ username }}</el-header>
+      <el-header
+        ><div style="display: flex; align-items: center">
+          <div style="margin-right: 10px">你好:{{ username }}</div>
+          <el-upload class="avatar-uploader" action="http://127.0.0.1:5555/avatar_upload" :show-file-list="false" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
+            <img v-if="imageUrl" :src="imageUrl" class="avatar" />
+            <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
+          </el-upload>
+        </div>
+        <div @click="logout" style="cursor: pointer">退出登录</div>
+      </el-header>
       <el-main>
         <div class="big">
           <div>
@@ -45,7 +54,7 @@
           </div>
           <!-- 右边表格 -->
           <div class="right">
-            <el-table :data="info" border style="width: 100%">
+            <el-table :data="infoList" border style="width: 100%">
               <el-table-column prop="id" label="id" width="180" />
               <el-table-column prop="name" label="姓名" width="180" />
               <el-table-column prop="address" label="地址" />
@@ -61,19 +70,29 @@
 
 <script setup>
 import { reactive, ref } from 'vue'
-import { useRoute } from 'vue-router'
-import { getAll, getInquire, getAdd, getUpdate, getDel } from '@/api'
+import { useRoute, useRouter } from 'vue-router'
+import { getAll, getInquire, getAdd, getUpdate, getDel, uploadAvatar, info } from '@/api'
+import local from '../utils/local'
+import { Plus } from '@element-plus/icons-vue'
+import { ElMessage } from 'element-plus'
+import { UploadProps } from 'element-plus'
+const imageUrl = ref('')
+const imgStr = ref('')
 let username = reactive('')
 let ids = ref()
 let name = ref('')
 let address = ref('')
 let tel = ref()
-let info = ref([])
+let infoList = ref([])
+let userInfo = ref({})
+const router = useRouter() //跳转
 const route = useRoute() //获取到值
-username = route.params.name
+route.params.name ? local.set('name', route.params.name) : ''
+username = local.get('name')
+
 const all = async () => {
   const data = await getAll()
-  info.value = data
+  infoList.value = data
 }
 const del = async () => {
   const id = ids.value
@@ -83,7 +102,7 @@ const del = async () => {
 const getInquires = async () => {
   const id = ids.value
   const data = await getInquire({ id })
-  info.value = data
+  infoList.value = data
 }
 const add = async () => {
   const data = await getAdd({ name: name.value, address: address.value, tel: tel.value })
@@ -93,6 +112,43 @@ const update = async () => {
   const data = await getUpdate({ id: ids.value, name: name.value, address: address.value, tel: tel.value })
   all()
 }
+const logout = () => {
+  // 退出登录
+  local.cls()
+  router.push({
+    name: 'login'
+  })
+}
+
+const handleAvatarSuccess = (response, uploadFile) => {
+  imageUrl.value = URL.createObjectURL(uploadFile.raw)
+  imgStr.value = response.imgUrl
+  saveAvatar()
+}
+const beforeAvatarUpload = (rawFile) => {
+  if (rawFile.type !== 'image/jpeg') {
+    ElMessage.error('Avatar picture must be JPG format!')
+    return false
+  } else if (rawFile.size / 1024 / 1024 > 2) {
+    ElMessage.error('Avatar picture size can not exceed 2MB!')
+    return false
+  }
+  return true
+}
+const saveAvatar = async () => {
+  const { code, data } = await uploadAvatar({
+    imgUrl: imgStr.value
+  })
+  // if (code === 0) {
+  //   location.reload()
+  // }
+}
+const getInfo = async () => {
+  const data = await info({})
+  imageUrl.value = data.accountInfo.imgUrl
+  userInfo.value = data.accountInfo
+}
+getInfo()
 </script>
 
 <style scoped>
@@ -100,8 +156,17 @@ const update = async () => {
   width: 100%;
 }
 .el-header {
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   margin: 0 100px;
   background-color: #ccc;
+}
+.imgs {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
 }
 .big {
   margin: 50px;
@@ -112,5 +177,31 @@ const update = async () => {
 }
 .w200 {
   width: 200px;
+}
+.avatar-uploader .avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: block;
+}
+.avatar-uploader .el-upload {
+  border: 1px dashed var(--el-border-color);
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: var(--el-transition-duration-fast);
+}
+
+.avatar-uploader .el-upload:hover {
+  border-color: var(--el-color-primary);
+}
+
+.el-icon.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  text-align: center;
 }
 </style>
