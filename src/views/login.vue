@@ -46,6 +46,11 @@ const login = async () => {
         name: formLabelAlign.username
       }
     })
+  } else {
+    ElMessage({
+      message: message,
+      type: 'error'
+    })
   }
 }
 function register() {
