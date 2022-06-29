@@ -9,6 +9,7 @@ exports.get = (req, res) => {
     res.send(data)
   })
 }
+// 保存头像
 exports.avat = (req, res) => {
   let { imgUrl } = req.query
   if (!imgUrl) {

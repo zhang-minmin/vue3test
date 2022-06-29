@@ -4,23 +4,61 @@ let index = require('./API/index')
 let user = require('./API/user')
 let login = require('./API/login')
 let info = require('./API/list')
-var multer = require('multer')
-
+let multer = require('multer')
+let db = require('./db/index')
+let fs = require('fs')
 /**
  * 文件上传
  */
 const storage = multer.diskStorage({
   destination: 'public/upload/imgs',
   filename: function (req, file, cb) {
-    const fileFormat = file.originalname.split('.')
-    const filename = new Date().getTime()
-    cb(null, filename + '.' + fileFormat[fileFormat.length - 1]) // 拼接文件名
+    // 第一种
+    // const fileFormat = file.originalname.split('.')
+    // const filename = new Date().getTime()
+    // cb(null, filename + '-' + fileFormat[0] + '.' + fileFormat[fileFormat.length - 1]) // 拼接文件名
+    //第二种
+    const sql = 'select id,name,imgUrl from user where id=?'
+    db.query(sql, [req.body.imgId], (err, data) => {
+      if (err) throw err
+      if (data.length) {
+        deleteall('./public/upload/imgs', req.body.imgId) //同一个账号只能有一个头像
+        const filename = new Date().getTime()
+        cb(null, filename + '-' + req.body.imgId + '-' + file.originalname) // 拼接文件名
+      }
+    })
   }
 })
 
 const upload = multer({
   storage
 })
+
+const deleteall = (path, id) => {
+  var files = []
+  if (fs.existsSync(path)) {
+    files = fs.readdirSync(path)
+
+    files.forEach(function (file, index) {
+      const curPath = path + '/' + file
+      let filesList = file.split('-')
+      if (filesList.includes(id)) {
+        // console.log('file', file)
+        fs.unlinkSync(curPath)
+      }
+
+      // if (fs.statSync(curPath).isDirectory()) {
+      //   // recurse
+      //   deleteall(curPath)
+      // } else {
+      //   // delete file
+      //   fs.unlinkSync(curPath)
+      // }
+    })
+    // fs.rmdirSync(path)
+  }
+}
+
 /**
  * 设置CROS允许跨域
  */

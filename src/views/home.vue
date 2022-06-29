@@ -4,7 +4,14 @@
       <el-header
         ><div style="display: flex; align-items: center">
           <div style="margin-right: 10px">你好:{{ username }}</div>
-          <el-upload class="avatar-uploader" action="http://127.0.0.1:5555/avatar_upload" :show-file-list="false" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
+          <el-upload
+            class="avatar-uploader"
+            action="http://127.0.0.1:5555/avatar_upload"
+            :data="{ imgId }"
+            :show-file-list="false"
+            :on-success="handleAvatarSuccess"
+            :before-upload="beforeAvatarUpload"
+          >
             <img v-if="imageUrl" :src="imageUrl" class="avatar" />
             <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
           </el-upload>
@@ -77,6 +84,7 @@ import { Plus } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 import { UploadProps } from 'element-plus'
 const imageUrl = ref('')
+const imgId = ref()
 const imgStr = ref('')
 let username = reactive('')
 let ids = ref()
@@ -147,6 +155,7 @@ const getInfo = async () => {
   const data = await info({})
   imageUrl.value = data.accountInfo.imgUrl
   userInfo.value = data.accountInfo
+  imgId.value = userInfo.value.id
 }
 getInfo()
 </script>
