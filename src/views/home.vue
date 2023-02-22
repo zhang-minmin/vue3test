@@ -1,19 +1,15 @@
 <template>
   <div class="common-layout">
     <el-container>
-      <el-header
-        ><div style="display: flex; align-items: center">
+      <el-header>
+        <div style="display: flex; align-items: center">
           <div style="margin-right: 10px">你好:{{ username }}</div>
-          <el-upload
-            class="avatar-uploader"
-            action="http://127.0.0.1:5555/avatar_upload"
-            :data="{ imgId }"
-            :show-file-list="false"
-            :on-success="handleAvatarSuccess"
-            :before-upload="beforeAvatarUpload"
-          >
+          <el-upload class="avatar-uploader" action="http://127.0.0.1:5555/avatar_upload" :data="{ imgId }"
+            :show-file-list="false" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
             <img v-if="imageUrl" :src="imageUrl" class="avatar" />
-            <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
+            <el-icon v-else class="avatar-uploader-icon">
+              <Plus />
+            </el-icon>
           </el-upload>
         </div>
         <div @click="logout" style="cursor: pointer">退出登录</div>
@@ -64,8 +60,8 @@
             <el-table :data="infoList" border style="width: 100%">
               <el-table-column prop="id" label="id" width="180" />
               <el-table-column prop="name" label="姓名" width="180" />
-              <el-table-column prop="address" label="地址" />
-              <el-table-column prop="tel" label="电话" />
+              <el-table-column prop="address" label="地址" width="180" />
+              <el-table-column prop="tel" label="电话" width="180" />
             </el-table>
           </div>
         </div>
@@ -164,6 +160,7 @@ getInfo()
 .common-layout {
   width: 100%;
 }
+
 .el-header {
   height: 100px;
   display: flex;
@@ -172,27 +169,33 @@ getInfo()
   margin: 0 100px;
   background-color: #ccc;
 }
+
 .imgs {
   width: 80px;
   height: 80px;
   border-radius: 50%;
 }
+
 .big {
   margin: 50px;
   display: flex;
 }
+
 .right {
   margin-left: 100px;
 }
+
 .w200 {
   width: 200px;
 }
+
 .avatar-uploader .avatar {
   width: 80px;
   height: 80px;
   border-radius: 50%;
   display: block;
 }
+
 .avatar-uploader .el-upload {
   border: 1px dashed var(--el-border-color);
   border-radius: 6px;
