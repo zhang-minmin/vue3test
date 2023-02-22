@@ -1,3 +1,13 @@
+<!--
+ * @Author: [敲代码的小可爱] [403652304@qq.com]
+ * @Date: 2022-05-12 14:37:59
+ * @LastEditors: [敲代码的小可爱] [403652304@qq.com]
+ * @LastEditTime: 2023-02-22 14:34:11
+ * @FilePath: \vue3test\src\views\register.vue
+ * @Description: 
+ * 
+ * Copyright (c) 2023 by ${git_name_email}, All Rights Reserved. 
+-->
 <template>
   <div class="bg">
     <div id="register">
@@ -20,6 +30,7 @@ import { reactive } from 'vue'
 import { register } from '@/api'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { useRouter } from 'vue-router'
+import md5 from 'js-md5';
 const formLabelAlign = reactive({
   params: {
     username: '',
@@ -30,7 +41,7 @@ const router = useRouter()
 const registers = async () => {
   const data = await register({
     name: formLabelAlign.username,
-    password: formLabelAlign.password
+    password: md5(formLabelAlign.password)
   })
   const { status, message } = data
   if (status === 200) {
@@ -71,6 +82,7 @@ const registers = async () => {
   background: url('../assets/img/register_bg.jpg');
   background-size: 100% 100%;
 }
+
 #register {
   height: 250px;
   width: 350px;
@@ -82,12 +94,15 @@ const registers = async () => {
   left: 40%;
   text-align: center;
   display: flex;
-  flex-direction: column; /*横向*/
+  flex-direction: column;
+  /*横向*/
   padding: 30px;
 }
+
 #register h2 {
   padding-bottom: 30px;
 }
+
 .btn {
   width: 60%;
   margin: auto;

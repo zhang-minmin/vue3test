@@ -22,6 +22,7 @@ import { getlogin } from '@/api'
 import { ElMessage } from 'element-plus'
 import { useRoute, useRouter } from 'vue-router'
 import local from '../utils/local'
+import md5 from 'js-md5';
 const formLabelAlign = reactive({
   username: '',
   password: ''
@@ -31,7 +32,7 @@ const router = useRouter() //跳转
 const login = async () => {
   const data = await getlogin({
     name: formLabelAlign.username,
-    password: formLabelAlign.password
+    password: md5(formLabelAlign.password)
   })
   const { status, message, token } = data
   if (status === 200) {
@@ -53,7 +54,7 @@ const login = async () => {
     })
   }
 }
-function register() {
+function register () {
   router.push({ name: 'register' })
 }
 </script>
@@ -68,6 +69,7 @@ function register() {
   background: url('../assets/img/login_bg.jpg');
   background-size: 100% 100%;
 }
+
 #login {
   height: 250px;
   width: 350px;
@@ -79,21 +81,24 @@ function register() {
   left: 40%;
   text-align: center;
   display: flex;
-  flex-direction: column; /*横向*/
+  flex-direction: column;
+  /*横向*/
   padding: 30px;
 }
+
 #login h2 {
   padding-bottom: 30px;
 }
+
 .btn {
   width: 60%;
   margin: auto;
 }
+
 .reg {
   color: red;
   position: absolute;
   bottom: 10px;
   right: 10px;
   cursor: pointer;
-}
-</style>
+}</style>

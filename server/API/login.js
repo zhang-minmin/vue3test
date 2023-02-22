@@ -1,3 +1,13 @@
+/*
+ * @Author: [敲代码的小可爱] [403652304@qq.com]
+ * @Date: 2022-05-12 14:39:10
+ * @LastEditors: [敲代码的小可爱] [403652304@qq.com]
+ * @LastEditTime: 2023-02-22 14:49:54
+ * @FilePath: \vue3test\server\API\login.js
+ * @Description:
+ *
+ * Copyright (c) 2023 by ${git_name_email}, All Rights Reserved.
+ */
 let db = require('../db/index')
 const jwt = require('jsonwebtoken')
 const secretKey = 'itsource'
@@ -18,6 +28,7 @@ exports.login = (req, res) => {
 
     if (data.length > 0) {
       const userInfo = { ...data[0] }
+      delete userInfo.password
       const token =
         'Bearer ' +
         jwt.sign(userInfo, secretKey, {
